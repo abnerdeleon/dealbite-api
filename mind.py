@@ -206,4 +206,3 @@ def dashboard():
     page += "<br/>"
     page += table(nat, "National Featured")
     return page
-  
