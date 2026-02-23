@@ -206,3 +206,35 @@ def dashboard():
     page += "<br/>"
     page += table(nat, "National Featured")
     return page
+    page += """
+<form action="/refresh/wendys" method="post">
+  <button type="submit">Refresh Wendy’s (Cleveland)</button>
+</form>
+<hr/>
+"""
+    page += table(cle, "Cleveland, OH")
+    page += "<br/>"
+    page += table(nat, "National Featured")
+    return page
+    # Record price history
+cursor.execute("""
+INSERT INTO price_history (deal_id, price, recorded_at)
+VALUES (?, ?, ?)
+""", (cursor.lastrowid, starting_price, datetime.utcnow().isoformat()))
+conn.commit()
+@app.get("/deals/{deal_id}/history")
+def get_price_history(deal_id: int):
+    conn = sqlite3.connect("dealbite.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT price, recorded_at
+        FROM price_history
+        WHERE deal_id = ?
+        ORDER BY recorded_at ASC
+    """, (deal_id,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [{"price": row[0], "recorded_at": row[1]} for row in rows]
