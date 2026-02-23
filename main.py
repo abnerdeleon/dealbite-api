@@ -172,6 +172,16 @@ def refresh_wendys():
     deals = refresh_wendys_scrape()
     upsert_deals(deals)
     return RedirectResponse(url="/", status_code=303)
+    # Create price history table
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS price_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    deal_id INTEGER,
+    price REAL,
+    recorded_at TEXT
+)
+""")
+conn.commit()
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard():
@@ -206,3 +216,25 @@ def dashboard():
     page += "<br/>"
     page += table(nat, "National Featured")
     return page
+    # Record price history
+cursor.execute("""
+INSERT INTO price_history (deal_id, price, recorded_at)
+VALUES (?, ?, ?)
+""", (cursor.lastrowid, starting_price, datetime.utcnow().isoformat()))
+conn.commit()
+@app.get("/deals/{deal_id}/history")
+def get_price_history(deal_id: int):
+    conn = sqlite3.connect("dealbite.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT price, recorded_at
+        FROM price_history
+        WHERE deal_id = ?
+        ORDER BY recorded_at ASC
+    """, (deal_id,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [{"price": row[0], "recorded_at": row[1]} for row in rows]
