@@ -200,8 +200,7 @@ def dashboard():
             html += "<tr>"
             html += f"<td>{d['restaurant']}</td>"
             html += f"<td>{d['title']}</td>"
-            html += f"<td>{price}</td>"
-            html += f"<td><a href='{d['source_url']}' target='_blank'>link</a></td>"
+            html += f"<td>{price}</td>"html += f'<td><a href="{d["source_url"]}" target="_blank">link</a></td>'
             html += "</tr>"
         html += "</table>"
         return html
