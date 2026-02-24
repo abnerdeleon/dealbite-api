@@ -29,7 +29,12 @@ def ensure_db():
     """)
     conn.commit()
     conn.close()
+    deal_id = cur.lastrowid
 
+cur.execute("""
+INSERT INTO price_history (deal_id, price, recorded_at)
+VALUES (?, ?, ?)
+""", (deal_id, starting_price, created_at))
 def fetch_deals(market: Optional[str]=None, restaurant: Optional[str]=None):
     ensure_db()
     conn = sqlite3.connect(DB_PATH)
@@ -130,8 +135,14 @@ def upsert_deals(deals):
     conn.commit()
     conn.close()
     return added
-
-def refresh_wendys_scrape():
+cur.execute("""
+CREATE TABLE IF NOT EXISTS price_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    deal_id INTEGER,
+    price REAL,
+    recorded_at TEXT
+)
+""")def refresh_wendys_scrape():
     url = "https://www.wendys.com/mealdeals"
     r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
     r.raise_for_status()
