@@ -131,7 +131,6 @@ def upsert_deals(deals):
     conn.commit()
     conn.close()
     return added
-cur.execute("""
 
 def refresh_wendys_scrape():
     url = "https://www.wendys.com/mealdeals"
