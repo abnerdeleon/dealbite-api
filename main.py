@@ -27,6 +27,7 @@ def ensure_db():
         created_at TEXT NOT NULL
     )
     """)
+    
     conn.commit()
     conn.close()
     deal_id = cur.lastrowid
@@ -142,7 +143,9 @@ CREATE TABLE IF NOT EXISTS price_history (
     price REAL,
     recorded_at TEXT
 )
-""")def refresh_wendys_scrape():
+""")
+
+def refresh_wendys_scrape():
     url = "https://www.wendys.com/mealdeals"
     r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
     r.raise_for_status()
