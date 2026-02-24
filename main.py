@@ -210,7 +210,7 @@ def dashboard():
     page += f"<p><b>DB:</b> {DB_PATH}</p>"
     page += """
 <form action="/refresh/wendys" method="post">
-  <button type="submit">Refresh Wendy’s (Cleveland)</button>
+  <button type="submit">Refresh Wendy's (Cleveland)</button>
 </form>
 <hr/>
 """
