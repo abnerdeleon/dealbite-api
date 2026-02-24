@@ -30,12 +30,7 @@ def ensure_db():
     
     conn.commit()
     conn.close()
-    deal_id = cur.lastrowid
 
-cur.execute("""
-INSERT INTO price_history (deal_id, price, recorded_at)
-VALUES (?, ?, ?)
-""", (deal_id, starting_price, created_at))
 def fetch_deals(market: Optional[str]=None, restaurant: Optional[str]=None):
     ensure_db()
     conn = sqlite3.connect(DB_PATH)
