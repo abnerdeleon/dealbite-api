@@ -132,13 +132,6 @@ def upsert_deals(deals):
     conn.close()
     return added
 cur.execute("""
-CREATE TABLE IF NOT EXISTS price_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    deal_id INTEGER,
-    price REAL,
-    recorded_at TEXT
-)
-""")
 
 def refresh_wendys_scrape():
     url = "https://www.wendys.com/mealdeals"
