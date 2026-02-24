@@ -151,11 +151,8 @@ def refresh_wendys_scrape():
     r.raise_for_status()
     text = normalize(BeautifulSoup(r.text, "lxml").get_text(" "))
     phrases = extract_price_phrases(text)
-deal_id = cur.lastrowid
-cur.execute("""
-INSERT INTO price_history (deal_id, price, recorded_at)
-VALUES (?, ?, ?)
-""", (deal_id, starting_price, created_at))    deals = []
+
+    deals = []
     for ph in phrases:
         prices = money_tokens(ph)
         title = clean_wendys_title(ph)
