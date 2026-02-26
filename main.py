@@ -173,16 +173,6 @@ def refresh_wendys():
     deals = refresh_wendys_scrape()
     upsert_deals(deals)
     return RedirectResponse(url="/", status_code=303)
-    # Create price history table
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS price_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    deal_id INTEGER,
-    price REAL,
-    recorded_at TEXT
-)
-""")
-conn.commit()
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard():
