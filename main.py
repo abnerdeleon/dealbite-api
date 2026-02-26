@@ -219,17 +219,4 @@ def dashboard():
     conn.close()
 
     return [{"price": row[0], "recorded_at": row[1]} for row in rows]
-    cur.execute("""
-CREATE TABLE IF NOT EXISTS price_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    deal_id INTEGER,
-    price REAL,
-    recorded_at TEXT
-)
-""")
-    deal_id = cur.lastrowid
-
-cur.execute("""
-INSERT INTO price_history (deal_id, price, recorded_at)
-VALUES (?, ?, ?)
-""", (deal_id, starting_price, created_at))
+    
