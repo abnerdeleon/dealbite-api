@@ -1,4 +1,4 @@
-import os, re, json, sqlite3
+import hashlibimport os, re, json, sqlite3
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -162,11 +162,36 @@ def refresh_wendys_scrape():
             seen.add(key)
             out.append(d)
     return out
+def make_deal_id(deal: dict) -> str:
+    canonical_parts = [
+        deal.get("source") or deal.get("brand") or "",
+        deal.get("title") or deal.get("name") or "",
+        deal.get("price") or deal.get("priceText") or "",
+        deal.get("url") or deal.get("link") or "",
+    ]
 
-@app.get("/deals")
+    canonical = "|".join(
+        str(x).strip().lower() for x in canonical_parts
+    )
+
+ @app.get("/deals")
 def get_deals(market: Optional[str]=None, restaurant: Optional[str]=None):
     deals = fetch_deals(market=market, restaurant=restaurant)
-    return {"count": len(deals), "deals": deals}
+
+    seen = set()
+
+    for deal in deals:
+        deal["id"] = deal.get("id") or make_deal_id(deal)
+
+        # Optional collision check (safe to keep)
+        if deal["id"] in seen:
+            print("ID COLLISION:", deal["id"], deal.get("title"))
+        seen.add(deal["id"])
+
+    return {
+        "count": len(deals),
+        "deals": deals
+    }
 
 @app.post("/refresh/wendys")
 def refresh_wendys():
